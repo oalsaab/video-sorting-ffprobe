@@ -38,9 +38,9 @@ To view the list of availaible options and their usage run the following command
 The output of running the help command:
 
 ```
-usage: main.py [-h] [-a] [-d] [-e] [-dl DURATION_LONG] [-ds DURATION_SHORT] [-db DURATION_BETWEEN DURATION_BETWEEN]
-               [-cy CREATION_YEAR] [-cm [1-12]] [-cd [1-31]] [-cs [YYYY-MM-DD]] [-cf] [-sl SIZE_LARGER]
-               [-ss SIZE_SMALLER] [-sb SIZE_BETWEEN SIZE_BETWEEN]
+usage: main.py [-h] [-a] [-d] [-e] [-dl] [-ds] [-db]
+               [-cy] [-cm] [-cd] [-cs] [-cf] [-sl]
+               [-ss] [-sb]
                folderPath videoExtension [videoExtension ...]
 
 positional arguments:
