@@ -7,7 +7,7 @@ from sort_class import Video_sorting
 def main():
     """Create command-line interface and call Video_sorting to process and sort the files."""
     
-    parser = argparse.ArgumentParser() 
+    parser = argparse.ArgumentParser('Video sorting command line utility program')
     arguments(parser) 
     args = parser.parse_args()
 
