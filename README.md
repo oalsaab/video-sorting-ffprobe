@@ -28,10 +28,10 @@ In the CLI run:
 ``` main.py [options] [path-to-directory] [video-extension] ```
 
 The positional arguments are required and one optional argument is required. <br />
-The video-extension positional specifiy which video file extensions to perform the action on. <br />
-The user can specifiy as many video file extensions as required, for example: ``` mov mp4 webm ```
+The video-extension positional specify which video file extensions to perform the sorting action on. <br />
+The user can specify as many video file extensions as required, for example: ``` mov mp4 webm ```
 
-To view the list of availaible options and their usage run the following command:
+To view the list of available options and their usage run the following command:
 
 ``` main.py -h ``` or ``` main.py --help```
 
