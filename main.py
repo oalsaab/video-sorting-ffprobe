@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 from arguments import arguments
-from sort_class import Video_sorting
+from sort_class import VideoSorting
 
 
 def main():
@@ -17,7 +17,7 @@ def main():
 
     for file in files:
         if file.suffix.lower() in videos:
-            process = Video_sorting(file, args, path)
+            process = VideoSorting(file, args, path)
 
             if args.audio: 
                 process.audio_sort()

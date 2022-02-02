@@ -6,7 +6,7 @@ import shutil
 from pathlib import Path
 
 
-class Video_sorting():
+class VideoSorting():
     """Spawns a new process of ffprobe or stat object on every file in the user-supplied directory. 
     Connects to the output pipes and captures the output for video file sorting."""
     
