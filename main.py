@@ -17,42 +17,45 @@ def main():
 
     for file in files:
         if file.suffix.lower() in videos:
-            process = VideoSorting(file, args, path)
+            try:
+                process = VideoSorting(file, args, path)
 
-            if args.audio: 
-                process.audio_sort()
+                if args.audio: 
+                    process.audio_sort()
+                    
+                elif args.dimensions:
+                    process.dimensions_sort()
                 
-            elif args.dimensions:
-                process.dimensions_sort()
-            
-            elif args.extension:
-                process.extension()
+                elif args.extension:
+                    process.extension()
+                    
+                elif (
+                    args.size_larger or
+                    args.size_smaller or
+                    args.size_between
+                ): 
+                    process.size_sort()
                 
-            elif (
-                args.size_larger or
-                args.size_smaller or
-                args.size_between
-            ): 
-                process.size_sort()
-            
-            elif (
-                args.duration_long or
-                args.duration_short or
-                args.duration_between
-            ):
-                process.duration_sort()
+                elif (
+                    args.duration_long or
+                    args.duration_short or
+                    args.duration_between
+                ):
+                    process.duration_sort()
+                    
+                elif (
+                    args.creation_year or
+                    args.creation_month or
+                    args.creation_day or
+                    args.creation_specific or
+                    args.creation_full
+                ):
+                    process.creation_sort()
                 
-            elif (
-                args.creation_year or
-                args.creation_month or
-                args.creation_day or
-                args.creation_specific or
-                args.creation_full
-            ):
-                process.creation_sort()
-            
-            else:
-                parser.error('Choose a action to perform')
+                else:
+                    parser.error('Choose a action to perform')
+            except KeyError:
+                print(file.name, 'corrupted or does not contain multimedia streams')
                 
 
 if __name__ == '__main__':
