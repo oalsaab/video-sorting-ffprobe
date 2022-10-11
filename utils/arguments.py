@@ -1,4 +1,4 @@
-import messages
+import utils.messages as messages
 
 
 def arguments(parser):

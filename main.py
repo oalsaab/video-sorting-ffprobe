@@ -1,9 +1,9 @@
 import argparse
 import logging
 from pathlib import Path
-from arguments import arguments
-from sorting import VideoSorting
-from messages import actions
+from utils.arguments import arguments
+from utils.sorting import VideoSorting
+from utils.messages import actions
 
 
 def create_args():
