@@ -1,9 +1,12 @@
 import argparse
 import logging
+import asyncio
 from pathlib import Path
-from arguments import arguments
-from sorting import VideoSorting
-from messages import actions
+
+from utils.arguments import arguments
+from utils.sort_stream import SortStream
+from utils.create_stream import stream_collection
+from utils.messages import actions
 
 
 def create_args():
@@ -12,16 +15,18 @@ def create_args():
     return (parser, parser.parse_args())
 
 
-def actions_dict():
-    action_dict = {}
-
+def action_map():
+    maps = {}
     for action in actions:
         if "_" in action:
-            action_dict[action] = getattr(VideoSorting, action)
+            name, _ = action.split("_")
+            method = name + "_sort"
+            maps[action] = getattr(SortStream, method)
         else:
-            action_dict[action] = getattr(VideoSorting, (action + "_sort"))
+            method = action + "_sort"
+            maps[action] = getattr(SortStream, method)
 
-    return action_dict
+    return maps
 
 
 def discover_action(args):
@@ -31,31 +36,31 @@ def discover_action(args):
 
 
 def main():
-    """Create command-line interface and call VideoSorting to process and sort the files."""
     parser, args = create_args()
     arg = discover_action(vars(args))
     if not arg:
         raise parser.error("Choose a action to perform")
 
-    files = Path(args.folderPath).iterdir()
-    videos = [("." + extension) for extension in args.videoExtension]
+    extensions = [("." + extension) for extension in args.videoExtension]
+    files = [
+        file
+        for file in Path(args.folderPath).iterdir()
+        if file.suffix.lower() in extensions
+    ]
+    streams = asyncio.run(stream_collection(files))
 
-    action_dict = actions_dict()
+    method = action_map()
+    for file, stream in streams.items():
+        process = SortStream(stream, file, arg, args)
+        run = method[arg]
 
-    for file in files:
-        if file.suffix.lower() in videos:
-            process = VideoSorting(file, args, args.folderPath)
-            run = action_dict[arg]
-
-            try:
-                run(process)
-            except KeyError:
-                logging.warning(
-                    " %s : Corrupted or does not contain multimedia streams" % file.name
-                )
+        try:
+            run(process)
+        except KeyError:
+            logging.warning(
+                "%s : Corrupted or does not contain multimedia streams" % file.name
+            )
 
 
 if __name__ == "__main__":
-    print("Sorting video files...")
     main()
-    print("Completed sorting video files")

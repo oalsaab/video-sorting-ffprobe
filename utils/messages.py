@@ -4,7 +4,6 @@ from pathlib import Path
 
 
 def valid_path(path):
-    """Validate the user-supplied path is a existing directory."""
     if Path(path).is_dir():
         return path
     else:
@@ -12,7 +11,6 @@ def valid_path(path):
 
 
 def valid_date(date):
-    """Validate the user-supplied date is a valid format to parse."""
     try:
         datetime.strptime(date, "%Y-%m-%d")
         return date
