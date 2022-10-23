@@ -2,7 +2,6 @@ import utils.messages as messages
 
 
 def arguments(parser):
-    """Command line positionals and optionals for video sorting."""
     abbrv = [arg for arg in messages.options if "-" in arg]
     action_dashes = [("--" + arg) for arg in messages.actions]
     args = dict(zip(abbrv, action_dashes))
