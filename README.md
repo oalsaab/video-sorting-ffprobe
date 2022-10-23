@@ -14,6 +14,7 @@ The program allows you to sort video files by:
 Concatenating video files is made easier if the files are sorted appropriately. 
 
 ## Installation
+Requires python version 3.8+.
 
 To use the program you must have FFmpeg installed and add ffprobe to your enviorment variables.
 
