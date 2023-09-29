@@ -2,7 +2,10 @@ from pathlib import Path
 
 import click
 
-directory = click.argument("directory", type=click.Path(exists=True))
+from utils.create_stream import create_streams
+from utils.sort_stream import sort_audio
+
+directory = click.argument("directory", type=click.Path(exists=True, path_type=Path))
 extension = click.argument("extension", nargs=-1)
 
 
@@ -24,7 +27,10 @@ def cli():
 def audio(directory: Path, extension: tuple):
     """Sort by audio"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_audio(stream)
 
 
 @cli.command("dimensions")
