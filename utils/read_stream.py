@@ -1,6 +1,12 @@
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
+from typing import NamedTuple
+
+
+class Dimensions(NamedTuple):
+    width: str
+    height: str
 
 
 @dataclass
@@ -19,15 +25,12 @@ class Stream:
         return "audio" in _codecs
 
     @property
-    def dimension(self):
-        try:
-            width = self.stream["streams"][0]["width"]
-            height = self.stream["streams"][0]["height"]
-        except KeyError:
-            width = self.stream["streams"][1]["width"]
-            height = self.stream["streams"][1]["height"]
+    def dimension(self) -> Dimensions:
+        for item in self.streams:
+            width, height = item.get("width"), item.get("height")
 
-        return (width, height)
+            if all(_ is not None for _ in (width, height)):
+                return Dimensions(width, height)
 
     @property
     def duration(self):
