@@ -1,4 +1,5 @@
 from datetime import date
+from datetime import datetime
 from typing import Optional
 from typing import Union
 
@@ -50,17 +51,17 @@ def sort_extension(stream: Stream) -> str:
 
 
 @sort()
-def sort_year(stream: Stream, value: str) -> Optional[str]:
+def sort_year(stream: Stream, value: int) -> Optional[str]:
     return f"{Creation.YEAR}-{value}" if (stream.creation.year == value) else None
 
 
 @sort()
-def sort_month(stream: Stream, value: str) -> Optional[str]:
+def sort_month(stream: Stream, value: int) -> Optional[str]:
     return f"{Creation.MONTH}-{value}" if (stream.creation.month == value) else None
 
 
 @sort()
-def sort_day(stream: Stream, value: str) -> Optional[str]:
+def sort_day(stream: Stream, value: int) -> Optional[str]:
     return f"{Creation.DAY}-{value}" if (stream.creation.day == value) else None
 
 
@@ -76,7 +77,7 @@ def sort_full_date(stream: Stream) -> str:
 
 
 @sort()
-def sort_specific_date(stream: Stream, value: date) -> Optional[str]:
+def sort_specific_date(stream: Stream, value: datetime) -> Optional[str]:
     return f"{value}" if (stream.creation == value) else None
 
 
