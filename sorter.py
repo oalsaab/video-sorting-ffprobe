@@ -13,6 +13,9 @@ from utils.sort_stream import sort_duration_short
 from utils.sort_stream import sort_extension
 from utils.sort_stream import sort_full_date
 from utils.sort_stream import sort_month
+from utils.sort_stream import sort_size_between
+from utils.sort_stream import sort_size_larger
+from utils.sort_stream import sort_size_smaller
 from utils.sort_stream import sort_specific_date
 from utils.sort_stream import sort_year
 
@@ -176,28 +179,40 @@ def creation_specific(directory: Path, extension: tuple, value: datetime):
 @cli.command("size_larger")
 @directory
 @extension
-def size_larger(directory: Path, extension: tuple):
+@click.option("--value", nargs=1, type=click.FLOAT, required=True)
+def size_larger(directory: Path, extension: tuple, value: float):
     """Sort by size larger than"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_size_larger(stream, value)
 
 
 @cli.command("size_smaller")
 @directory
 @extension
-def size_smaller(directory: Path, extension: tuple):
+@click.option("--value", nargs=1, type=click.FLOAT, required=True)
+def size_smaller(directory: Path, extension: tuple, value: float):
     """Sort by size smaller than"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_size_smaller(stream, value)
 
 
 @cli.command("size_between")
 @directory
 @extension
-def size_between(directory: Path, extension: tuple):
+@click.option("--value", nargs=2, type=click.FLOAT, required=True)
+def size_between(directory: Path, extension: tuple, value: tuple[float, float]):
     """Sort by size between"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_size_between(stream, value)
 
 
 if __name__ == "__main__":
