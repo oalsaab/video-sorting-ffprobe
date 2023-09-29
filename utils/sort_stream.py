@@ -8,7 +8,7 @@ from utils.create_stream import StreamMap
 
 class Duration(str, Enum):
     LONGER = "duration_longer_than"
-    SHORTEN = "duration_shorter_than"
+    SHORTER = "duration_shorter_than"
     BETWEEN = "duration_between"
 
 
@@ -30,25 +30,25 @@ class Audio(str, Enum):
 
 
 def _sort_greater_than(
-    mapped: StreamMap, value: float, name: str, attribute: Union[str, int]
+    attribute: Union[str, int], value: float, name: str
 ) -> Optional[str]:
     return f"{name}_{value}" if (float(attribute) >= value) else None
 
 
 def _sort_less_than(
-    mapped: StreamMap, value: float, name: str, attribute: Union[str, int]
+    attribute: Union[str, int], value: float, name: str
 ) -> Optional[str]:
     return f"{name}_{value}" if (value >= float(attribute)) else None
 
 
 def _sort_between(
-    mapped: StreamMap, value: tuple[float, float], name: str, attribute: Union[str, int]
+    attribute: Union[str, int], value: tuple[float, float], name: str
 ) -> Optional[str]:
     lesser, greater = value
 
     return (
         f"{name}_{lesser}-{greater}"
-        if (lesser <= float(mapped.stream.duration) <= greater)
+        if (lesser <= float(attribute) <= greater)
         else None
     )
 
@@ -93,3 +93,53 @@ def sort_full_date(mapped: StreamMap) -> str:
 
 def sort_specific_date(mapped: StreamMap, value: date) -> Optional[str]:
     return f"{value}" if (mapped.stream.creation == value) else None
+
+
+def sort_duration_long(mapped: StreamMap, value: float) -> Optional[str]:
+    return _sort_greater_than(
+        attribute=mapped.stream.duration,
+        value=value,
+        name=Duration.LONGER.value,
+    )
+
+
+def sort_duration_short(mapped: StreamMap, value: float) -> Optional[str]:
+    return _sort_less_than(
+        attribute=mapped.stream.duration,
+        value=value,
+        name=Duration.SHORTER.value,
+    )
+
+
+def sort_duration_between(
+    mapped: StreamMap, value: tuple[float, float]
+) -> Optional[str]:
+    return _sort_between(
+        attribute=mapped.stream.duration,
+        value=value,
+        name=Duration.BETWEEN.value,
+    )
+
+
+def sort_size_larger(mapped: StreamMap, value: float) -> Optional[str]:
+    return _sort_greater_than(
+        attribute=mapped.stream.size,
+        value=value,
+        name=Size.LARGER.value,
+    )
+
+
+def sort_size_smaller(mapped: StreamMap, value: float) -> Optional[str]:
+    return _sort_less_than(
+        attribute=mapped.stream.size,
+        value=value,
+        name=Size.SMALLER.value,
+    )
+
+
+def sort_size_between(mapped: StreamMap, value: tuple[float, float]) -> Optional[str]:
+    return _sort_between(
+        attribute=mapped.stream.size,
+        value=value,
+        name=Size.BETWEEN.value,
+    )
