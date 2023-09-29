@@ -1,11 +1,13 @@
 import asyncio
 import asyncio.subprocess
-import shlex
 import os
+import shlex
+
+COMMAND = "ffprobe -v quiet -print_format json -show_format -show_streams"
 
 
 async def read(file, limit):
-    cmd = shlex.split("ffprobe -v quiet -print_format json -show_format -show_streams")
+    cmd = shlex.split(COMMAND)
     cmd.append(file)
 
     async with asyncio.Semaphore(limit):
