@@ -1,15 +1,15 @@
-from json import loads
-from pathlib import Path, WindowsPath
+import json
 from dataclasses import dataclass
+from pathlib import Path
+
 
 @dataclass
 class ReadStream:
     stream: bytes
-    file: WindowsPath
+    file: Path
 
     def __post_init__(self):
-        self.stream = loads(self.stream)
-        self.file = Path(self.file)
+        self.stream = json.loads(self.stream)
 
     @property
     def audio(self):
