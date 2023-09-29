@@ -4,6 +4,8 @@ import click
 
 from utils.create_stream import create_streams
 from utils.sort_stream import sort_audio
+from utils.sort_stream import sort_dimension
+from utils.sort_stream import sort_extension
 
 directory = click.argument("directory", type=click.Path(exists=True, path_type=Path))
 extension = click.argument("extension", nargs=-1)
@@ -39,7 +41,10 @@ def audio(directory: Path, extension: tuple):
 def dimensions(directory: Path, extension: tuple):
     """Sort by dimensions"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_dimension(stream)
 
 
 @cli.command("extensions")
@@ -48,7 +53,10 @@ def dimensions(directory: Path, extension: tuple):
 def extensions(directory: Path, extension: tuple):
     """Sort by extensions"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_extension(stream)
 
 
 @cli.command("duration_longer")
