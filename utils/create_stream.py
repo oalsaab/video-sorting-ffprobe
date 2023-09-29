@@ -1,5 +1,6 @@
 import asyncio
 import asyncio.subprocess
+import json
 import os
 import shlex
 from pathlib import Path
@@ -7,7 +8,7 @@ from pathlib import Path
 COMMAND = "ffprobe -v quiet -print_format json -show_format -show_streams"
 
 
-async def _read(file: Path, limit: int) -> bytes:
+async def _read(file: Path, limit: int) -> dict:
     cmd = shlex.split(COMMAND)
     cmd.append(file)
 
@@ -18,10 +19,10 @@ async def _read(file: Path, limit: int) -> bytes:
 
         stdout, _ = await process.communicate()
 
-        return stdout
+        return json.loads(stdout)
 
 
-async def stream_collection(files: list[Path]) -> dict:
+async def stream_collection(files: list[Path]) -> dict[Path, dict]:
     limit = os.cpu_count()
 
     tasks = [asyncio.create_task(_read(file, limit)) for file in files]
