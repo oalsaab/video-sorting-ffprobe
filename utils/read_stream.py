@@ -1,8 +1,21 @@
 from dataclasses import dataclass
 from datetime import date, datetime
+from enum import Enum
 from functools import cached_property
 from pathlib import Path
 from typing import NamedTuple
+
+
+class Model(str, Enum):
+    STREAMS = "streams"
+    CODEC_TYPE = "codec_type"
+    AUDIO = "audio"
+    WIDTH = "width"
+    HEIGHT = "height"
+    FORMAT = "format"
+    DURATION = "duration"
+    TAGS = "tags"
+    CREATION_TIME = "creation_time"
 
 
 class Dimensions(NamedTuple):
@@ -17,30 +30,30 @@ class Stream:
 
     @cached_property
     def streams(self) -> list[dict]:
-        return self.stream.get("streams", [{}])
+        return self.stream.get(Model.STREAMS, [{}])
 
     @property
     def audio(self) -> bool:
-        _codecs = (streams.get("codec_type") for streams in self.streams)
+        _codecs = (streams.get(Model.CODEC_TYPE) for streams in self.streams)
 
-        return "audio" in _codecs
+        return Model.AUDIO.value in _codecs
 
     @property
     def dimension(self) -> Dimensions:
         for item in self.streams:
-            width, height = item.get("width"), item.get("height")
+            width, height = item.get(Model.WIDTH), item.get(Model.HEIGHT)
 
             if all(_ is not None for _ in (width, height)):
                 return Dimensions(width, height)
 
     @property
     def duration(self) -> str:
-        return self.stream.get("format", {}).get("duration")
+        return self.stream.get(Model.FORMAT, {}).get(Model.DURATION)
 
     @property
     def creation(self) -> date:
-        _tags: dict = next(iter(self.streams), {}).get("tags", {})
-        _creation_time = _tags.get("creation_time")
+        _tags: dict = next(iter(self.streams), {}).get(Model.TAGS, {})
+        _creation_time = _tags.get(Model.CREATION_TIME)
 
         if _creation_time is None:
             return None
