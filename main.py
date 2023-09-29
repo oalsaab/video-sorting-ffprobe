@@ -1,12 +1,13 @@
 import argparse
-import logging
 import asyncio
+import logging
 from pathlib import Path
 
 from utils.arguments import arguments
-from utils.sort_stream import SortStream
 from utils.create_stream import stream_collection
 from utils.messages import actions
+from utils.read_stream import Stream
+from utils.sort_stream import SortStream
 
 
 def create_args():
@@ -30,7 +31,7 @@ def action_map():
 
 
 def discover_action(args):
-    for (arg, val) in args.items():
+    for arg, val in args.items():
         if (arg in actions) and val:
             return arg
 
@@ -51,7 +52,13 @@ def main():
 
     method = action_map()
     for file, stream in streams.items():
-        process = SortStream(stream, file, arg, args)
+        process = SortStream(
+            stream=Stream(stream),
+            file=file,
+            arg=arg,
+            args=args,
+        )
+
         run = method[arg]
 
         try:
