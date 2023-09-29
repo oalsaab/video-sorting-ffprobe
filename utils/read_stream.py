@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import date, datetime
 from functools import cached_property
 from pathlib import Path
 from typing import NamedTuple
@@ -37,21 +38,22 @@ class Stream:
         return self.stream.get("format", {}).get("duration")
 
     @property
-    def creation(self):
-        creation_time_utc = self.stream["streams"][0]["tags"]["creation_time"]
-        creation_time_str = creation_time_utc[:10]
-        creation_time = creation_time_str.split("-")
-        year, month, day = creation_time
+    def creation(self) -> date:
+        _tags: dict = next(iter(self.streams), {}).get("tags", {})
+        _creation_time = _tags.get("creation_time")
 
-        return {"specific": creation_time_str, "year": year, "month": month, "day": day}
+        if _creation_time is None:
+            return None
 
-    @property
-    def size(self):
-        size = self.file.stat().st_size
-        return size / (1024 * 1024)
+        return datetime.strptime(_creation_time, "%Y-%m-%dT%H:%M:%S.%fZ").date()
 
     @property
-    def extension(self):
-        extension_path = self.file.suffix
-        _, extension = extension_path.split(".")
+    def size(self) -> int:
+        _size = self.file.stat().st_size
+        return _size / (1024 * 1024)
+
+    @property
+    def extension(self) -> str:
+        _, extension = self.file.suffix.split(".")
+
         return extension
