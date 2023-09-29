@@ -1,14 +1,20 @@
+from datetime import datetime
 from pathlib import Path
 
 import click
 
 from utils.create_stream import create_streams
 from utils.sort_stream import sort_audio
+from utils.sort_stream import sort_day
 from utils.sort_stream import sort_dimension
 from utils.sort_stream import sort_duration_between
 from utils.sort_stream import sort_duration_long
 from utils.sort_stream import sort_duration_short
 from utils.sort_stream import sort_extension
+from utils.sort_stream import sort_full_date
+from utils.sort_stream import sort_month
+from utils.sort_stream import sort_specific_date
+from utils.sort_stream import sort_year
 
 directory = click.argument("directory", type=click.Path(exists=True, path_type=Path))
 extension = click.argument("extension", nargs=-1)
@@ -104,46 +110,67 @@ def duration_between(directory: Path, extension: tuple, value: tuple[float, floa
 @cli.command("year")
 @directory
 @extension
-def creation_year(directory: Path, extension: tuple):
+@click.option("--value", nargs=1, type=click.DateTime(formats=["%Y"]), required=True)
+def creation_year(directory: Path, extension: tuple, value: datetime):
     """Sort by year"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_year(stream, value.year)
 
 
 @cli.command("month")
 @directory
 @extension
-def creation_year(directory: Path, extension: tuple):
+@click.option("--value", nargs=1, type=click.DateTime(formats=["%m"]), required=True)
+def creation_year(directory: Path, extension: tuple, value: datetime):
     """Sort by month"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_month(stream, value.month)
 
 
 @cli.command("day")
 @directory
 @extension
-def creation_day(directory: Path, extension: tuple):
+@click.option("--value", nargs=1, type=click.DateTime(formats=["%d"]), required=True)
+def creation_day(directory: Path, extension: tuple, value: datetime):
     """Sort by day"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_day(stream, value.day)
 
 
 @cli.command("date")
 @directory
 @extension
-def creation_date(directory: Path, extension: tuple):
+def creation_full(directory: Path, extension: tuple):
     """Sort by full date"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_full_date(stream)
 
 
-@cli.command("specfic_date")
+@cli.command("specific_date")
 @directory
 @extension
-def creation_specific(directory: Path, extension: tuple):
-    """Sort by specfic date"""
+@click.option(
+    "--value", nargs=1, type=click.DateTime(formats=["%Y-%m-%d"]), required=True
+)
+def creation_specific(directory: Path, extension: tuple, value: datetime):
+    """Sort by specific date"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_specific_date(stream, value.date())
 
 
 @cli.command("size_larger")
