@@ -5,6 +5,9 @@ import click
 from utils.create_stream import create_streams
 from utils.sort_stream import sort_audio
 from utils.sort_stream import sort_dimension
+from utils.sort_stream import sort_duration_between
+from utils.sort_stream import sort_duration_long
+from utils.sort_stream import sort_duration_short
 from utils.sort_stream import sort_extension
 
 directory = click.argument("directory", type=click.Path(exists=True, path_type=Path))
@@ -62,28 +65,40 @@ def extensions(directory: Path, extension: tuple):
 @cli.command("duration_longer")
 @directory
 @extension
-def duration_longer(directory: Path, extension: tuple):
+@click.option("--value", nargs=1, type=click.FLOAT, required=True)
+def duration_longer(directory: Path, extension: tuple, value: float):
     """Sort by duration longer than"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_duration_long(stream, value)
 
 
 @cli.command("duration_shorter")
 @directory
 @extension
-def duration_shorter(directory: Path, extension: tuple):
+@click.option("--value", nargs=1, type=click.FLOAT, required=True)
+def duration_shorter(directory: Path, extension: tuple, value: float):
     """Sort by duration shorter than"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_duration_short(stream, value)
 
 
 @cli.command("duration_between")
 @directory
 @extension
-def duration_between(directory: Path, extension: tuple):
+@click.option("--value", nargs=2, type=click.FLOAT, required=True)
+def duration_between(directory: Path, extension: tuple, value: tuple[float, float]):
     """Sort by duration between"""
 
-    return directory
+    streams = create_streams(directory, extension)
+
+    for stream in streams:
+        sort_duration_between(stream, value)
 
 
 @cli.command("year")
