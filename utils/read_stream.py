@@ -33,8 +33,8 @@ class Stream:
                 return Dimensions(width, height)
 
     @property
-    def duration(self):
-        return self.stream["format"]["duration"]
+    def duration(self) -> str:
+        return self.stream.get("format", {}).get("duration")
 
     @property
     def creation(self):
