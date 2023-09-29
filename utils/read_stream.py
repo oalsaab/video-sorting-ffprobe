@@ -1,21 +1,11 @@
 from dataclasses import dataclass
-from datetime import date, datetime
-from enum import Enum
+from datetime import date
+from datetime import datetime
 from functools import cached_property
 from pathlib import Path
 from typing import NamedTuple
 
-
-class Model(str, Enum):
-    STREAMS = "streams"
-    CODEC_TYPE = "codec_type"
-    AUDIO = "audio"
-    WIDTH = "width"
-    HEIGHT = "height"
-    FORMAT = "format"
-    DURATION = "duration"
-    TAGS = "tags"
-    CREATION_TIME = "creation_time"
+from utils.enums import Model
 
 
 class Dimensions(NamedTuple):
