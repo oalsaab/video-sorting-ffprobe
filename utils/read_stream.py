@@ -1,52 +1,62 @@
-from json import loads
-from pathlib import Path, WindowsPath
 from dataclasses import dataclass
+from datetime import date
+from datetime import datetime
+from functools import cached_property
+from pathlib import Path
+from typing import NamedTuple
+
+from utils.enums import Model
+
+
+class Dimensions(NamedTuple):
+    width: str
+    height: str
+
 
 @dataclass
-class ReadStream:
-    stream: bytes
-    file: WindowsPath
+class Stream:
+    stream: dict
+    file: Path
 
-    def __post_init__(self):
-        self.stream = loads(self.stream)
-        self.file = Path(self.file)
-
-    @property
-    def audio(self):
-        codecs = [streams["codec_type"] for streams in self.stream["streams"]]
-        return "audio" if "audio" in codecs else "no_audio"
+    @cached_property
+    def streams(self) -> list[dict]:
+        return self.stream.get(Model.STREAMS, [{}])
 
     @property
-    def dimension(self):
-        try:
-            width = self.stream["streams"][0]["width"]
-            height = self.stream["streams"][0]["height"]
-        except KeyError:
-            width = self.stream["streams"][1]["width"]
-            height = self.stream["streams"][1]["height"]
+    def audio(self) -> bool:
+        _codecs = (streams.get(Model.CODEC_TYPE) for streams in self.streams)
 
-        return (width, height)
+        return Model.AUDIO.value in _codecs
 
     @property
-    def duration(self):
-        return self.stream["format"]["duration"]
+    def dimension(self) -> Dimensions:
+        for item in self.streams:
+            width, height = item.get(Model.WIDTH), item.get(Model.HEIGHT)
+
+            if all(_ is not None for _ in (width, height)):
+                return Dimensions(width, height)
 
     @property
-    def creation(self):
-        creation_time_utc = self.stream["streams"][0]["tags"]["creation_time"]
-        creation_time_str = creation_time_utc[:10]
-        creation_time = creation_time_str.split("-")
-        year, month, day = creation_time
-
-        return {"specific": creation_time_str, "year": year, "month": month, "day": day}
+    def duration(self) -> str:
+        return self.stream.get(Model.FORMAT, {}).get(Model.DURATION)
 
     @property
-    def size(self):
-        size = self.file.stat().st_size
-        return size / (1024 * 1024)
+    def creation(self) -> date:
+        _tags: dict = next(iter(self.streams), {}).get(Model.TAGS, {})
+        _creation_time = _tags.get(Model.CREATION_TIME)
+
+        if _creation_time is None:
+            return None
+
+        return datetime.strptime(_creation_time, "%Y-%m-%dT%H:%M:%S.%fZ").date()
 
     @property
-    def extension(self):
-        extension_path = self.file.suffix
-        _, extension = extension_path.split(".")
+    def size(self) -> int:
+        _size = self.file.stat().st_size
+        return _size / (1024 * 1024)
+
+    @property
+    def extension(self) -> str:
+        _, extension = self.file.suffix.split(".")
+
         return extension
