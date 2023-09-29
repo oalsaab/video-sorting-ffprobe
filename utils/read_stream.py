@@ -1,20 +1,22 @@
-import json
 from dataclasses import dataclass
+from functools import cached_property
 from pathlib import Path
 
 
 @dataclass
-class ReadStream:
-    stream: bytes
+class Stream:
+    stream: dict
     file: Path
 
-    def __post_init__(self):
-        self.stream = json.loads(self.stream)
+    @cached_property
+    def streams(self) -> list[dict]:
+        return self.stream.get("streams", [{}])
 
     @property
-    def audio(self):
-        codecs = [streams["codec_type"] for streams in self.stream["streams"]]
-        return "audio" if "audio" in codecs else "no_audio"
+    def audio(self) -> bool:
+        _codecs = (streams.get("codec_type") for streams in self.streams)
+
+        return "audio" in _codecs
 
     @property
     def dimension(self):
