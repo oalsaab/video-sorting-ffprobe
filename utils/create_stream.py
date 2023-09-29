@@ -16,11 +16,14 @@ async def read(file, limit):
         )
 
         stdout, stderr = await process.communicate()
+
         return stdout
 
 
 async def stream_collection(files):
     limit = os.cpu_count()
+
     tasks = [asyncio.create_task(read(file, limit)) for file in files]
     streams = await asyncio.gather(*tasks)
+
     return dict(zip(files, streams))
