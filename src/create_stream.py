@@ -3,6 +3,7 @@ import asyncio.subprocess
 import json
 import os
 import shlex
+from functools import wraps
 from pathlib import Path
 from typing import Iterable
 from typing import NamedTuple
@@ -38,12 +39,12 @@ async def _stream_collection(files: Iterable[Path]) -> list[Processed]:
     limit = os.cpu_count()
 
     tasks = [asyncio.create_task(_process(file, limit)) for file in files]
-    streams = await asyncio.gather(*tasks)
+    processed = await asyncio.gather(*tasks)
 
-    return streams
+    return processed
 
 
-def _filter_extensions(directory: Path, extension: tuple) -> Iterable[Path]:
+def _filter_files(directory: Path, extension: tuple) -> Iterable[Path]:
     extensions = [("." + ext) for ext in extension]
 
     for file in directory.iterdir():
@@ -51,10 +52,20 @@ def _filter_extensions(directory: Path, extension: tuple) -> Iterable[Path]:
             yield file
 
 
-def create_streams(directory: Path, extension: tuple) -> Iterable[Stream]:
-    filtered = _filter_extensions(directory, extension)
+def _iter_streams(processed: list[Processed]) -> Iterable[Stream]:
+    for process in processed:
+        yield Stream(process.deserialized, process.file)
 
-    streams = asyncio.run(_stream_collection(filtered))
 
-    for stream in streams:
-        yield Stream(stream.deserialized, stream.file)
+def create_streams(func):
+    @wraps(func)
+    def decorator(directory: Path, extension: tuple, *args, **kwargs):
+        filtered = _filter_files(directory, extension)
+
+        processed = asyncio.run(_stream_collection(filtered))
+
+        streams = _iter_streams(processed)
+
+        func(streams, *args, **kwargs)
+
+    return decorator
