@@ -12,12 +12,12 @@ from .read_stream import Stream
 COMMAND = "ffprobe -v quiet -print_format json -show_format -show_streams"
 
 
-class Map(NamedTuple):
+class Processed(NamedTuple):
     file: Path
     deserialized: dict
 
 
-async def _read(file: Path, limit: int) -> Map:
+async def _process(file: Path, limit: int) -> Processed:
     cmd = shlex.split(COMMAND)
     cmd.append(file)
 
@@ -31,13 +31,13 @@ async def _read(file: Path, limit: int) -> Map:
         deserialized = json.loads(stdout)
 
         # Can't pass imported Stream dataclass to async context, event loop closed before import
-        return Map(file, deserialized)
+        return Processed(file, deserialized)
 
 
-async def _stream_collection(files: Iterable[Path]) -> list[Map]:
+async def _stream_collection(files: Iterable[Path]) -> list[Processed]:
     limit = os.cpu_count()
 
-    tasks = [asyncio.create_task(_read(file, limit)) for file in files]
+    tasks = [asyncio.create_task(_process(file, limit)) for file in files]
     streams = await asyncio.gather(*tasks)
 
     return streams
