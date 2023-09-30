@@ -3,21 +3,21 @@ from pathlib import Path
 
 import click
 
-from utils.create_stream import create_streams
-from utils.sort_stream import sort_audio
-from utils.sort_stream import sort_day
-from utils.sort_stream import sort_dimension
-from utils.sort_stream import sort_duration_between
-from utils.sort_stream import sort_duration_long
-from utils.sort_stream import sort_duration_short
-from utils.sort_stream import sort_extension
-from utils.sort_stream import sort_full_date
-from utils.sort_stream import sort_month
-from utils.sort_stream import sort_size_between
-from utils.sort_stream import sort_size_larger
-from utils.sort_stream import sort_size_smaller
-from utils.sort_stream import sort_specific_date
-from utils.sort_stream import sort_year
+from src.create_stream import create_streams
+from src.sort_stream import sort_audio
+from src.sort_stream import sort_day
+from src.sort_stream import sort_dimension
+from src.sort_stream import sort_duration_between
+from src.sort_stream import sort_duration_long
+from src.sort_stream import sort_duration_short
+from src.sort_stream import sort_extension
+from src.sort_stream import sort_full_date
+from src.sort_stream import sort_month
+from src.sort_stream import sort_size_between
+from src.sort_stream import sort_size_larger
+from src.sort_stream import sort_size_smaller
+from src.sort_stream import sort_specific_date
+from src.sort_stream import sort_year
 
 directory = click.argument("directory", type=click.Path(exists=True, path_type=Path))
 extension = click.argument("extension", nargs=-1)

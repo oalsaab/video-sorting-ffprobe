@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Iterable
 from typing import NamedTuple
 
-from utils.read_stream import Stream
+from .read_stream import Stream
 
 COMMAND = "ffprobe -v quiet -print_format json -show_format -show_streams"
 
