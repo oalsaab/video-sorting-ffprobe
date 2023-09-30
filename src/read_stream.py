@@ -5,7 +5,7 @@ from functools import cached_property
 from pathlib import Path
 from typing import NamedTuple
 
-from utils.enums import Model
+from .enums import Model
 
 
 class Dimensions(NamedTuple):
