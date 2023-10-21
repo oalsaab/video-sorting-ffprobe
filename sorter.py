@@ -120,40 +120,30 @@ def creation(
             sort_full_date(stream)
 
 
-@cli.command("size_larger")
+@cli.command("size")
 @directory
 @extension
 @create_streams
-@click.option("--value", nargs=1, type=click.FLOAT, required=True)
-def size_larger(streams: Iterable[Stream], value: float):
-    """Sort by size larger than"""
+@click.option("--larger", nargs=1, type=click.FLOAT)
+@click.option("--smaller", nargs=1, type=click.FLOAT)
+@click.option("--between", nargs=2, type=click.FLOAT)
+def size_larger(
+    streams: Iterable[Stream],
+    larger: float,
+    smaller: float,
+    between: tuple[float, float],
+):
+    """Sort by size"""
 
     for stream in streams:
-        sort_size_larger(stream, value)
+        if larger:
+            sort_size_larger(stream, larger)
 
+        if smaller:
+            sort_size_smaller(stream, smaller)
 
-@cli.command("size_smaller")
-@directory
-@extension
-@create_streams
-@click.option("--value", nargs=1, type=click.FLOAT, required=True)
-def size_smaller(streams: Iterable[Stream], value: float):
-    """Sort by size smaller than"""
-
-    for stream in streams:
-        sort_size_smaller(stream, value)
-
-
-@cli.command("size_between")
-@directory
-@extension
-@create_streams
-@click.option("--value", nargs=2, type=click.FLOAT, required=True)
-def size_between(streams: Iterable[Stream], value: tuple[float, float]):
-    """Sort by size between"""
-
-    for stream in streams:
-        sort_size_between(stream, value)
+        if between:
+            sort_size_between(stream, between)
 
 
 if __name__ == "__main__":
