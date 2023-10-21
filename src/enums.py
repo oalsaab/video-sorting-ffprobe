@@ -60,3 +60,11 @@ class Option(str, Enum):
     MONTH = "--month"
     DAY = "--day"
     SPECIFIC = "--specific"
+
+    @classmethod
+    def duration(cls) -> list[str]:
+        return [cls.LONGER.value, cls.SHORTER.value, cls.BETWEEN.value]
+
+    @classmethod
+    def size(cls) -> list[str]:
+        return [cls.LARGER.value, cls.SMALLER.value, cls.BETWEEN.value]

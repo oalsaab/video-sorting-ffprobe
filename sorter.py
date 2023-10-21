@@ -78,7 +78,9 @@ def duration(
     """Sort by duration"""
 
     if not any((longer, shorter, between)):
-        raise click.UsageError("PLACEHOLDER")
+        raise click.UsageError(
+            f"Duration command requires at least one of following options: {Option.duration()}"
+        )
 
     for stream in streams:
         if longer:
@@ -139,6 +141,11 @@ def size_larger(
     between: tuple[float, float],
 ):
     """Sort by size"""
+
+    if not any((larger, smaller, between)):
+        raise click.UsageError(
+            f"Size command requires at least one of following options: {Option.size()}"
+        )
 
     for stream in streams:
         if larger:
