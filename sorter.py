@@ -5,6 +5,7 @@ from typing import Iterable
 import click
 
 from src.create_stream import create_streams
+from src.enums import Command
 from src.read_stream import Stream
 from src.sort_stream import *
 
@@ -24,7 +25,7 @@ def cli():
     """
 
 
-@cli.command("audio")
+@cli.command(Command.AUDIO)
 @directory
 @extension
 @create_streams
@@ -35,7 +36,7 @@ def audio(streams: Iterable[Stream]):
         sort_audio(stream)
 
 
-@cli.command("dimensions")
+@cli.command(Command.DIMENSIONS)
 @directory
 @extension
 @create_streams
@@ -46,7 +47,7 @@ def dimensions(streams: Iterable[Stream]):
         sort_dimension(stream)
 
 
-@cli.command("extensions")
+@cli.command(Command.EXTENSIONS)
 @directory
 @extension
 @create_streams
@@ -57,7 +58,7 @@ def extensions(streams: Iterable[Stream]):
         sort_extension(stream)
 
 
-@cli.command("duration")
+@cli.command(Command.DURATION)
 @directory
 @extension
 @create_streams
@@ -86,7 +87,7 @@ def duration(
             sort_duration_between(stream, between)
 
 
-@cli.command("date")
+@cli.command(Command.DATE)
 @directory
 @extension
 @create_streams
@@ -120,7 +121,7 @@ def creation(
             sort_full_date(stream)
 
 
-@cli.command("size")
+@cli.command(Command.SIZE)
 @directory
 @extension
 @create_streams

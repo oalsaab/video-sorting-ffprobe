@@ -34,3 +34,12 @@ class Creation(str, Enum):
 class Audio(str, Enum):
     AUDIO = "audio"
     NO_AUDIO = "no_audio"
+
+
+class Command(str, Enum):
+    AUDIO = "audio"
+    DATE = "date"
+    SIZE = "size"
+    DURATION = "duration"
+    DIMENSIONS = "dimensions"
+    EXTENSIONS = "extensions"
