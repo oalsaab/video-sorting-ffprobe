@@ -34,3 +34,37 @@ class Creation(str, Enum):
 class Audio(str, Enum):
     AUDIO = "audio"
     NO_AUDIO = "no_audio"
+
+
+class Command(str, Enum):
+    AUDIO = "audio"
+    DATE = "date"
+    SIZE = "size"
+    DURATION = "duration"
+    DIMENSIONS = "dimensions"
+    EXTENSIONS = "extensions"
+
+
+class Argument(str, Enum):
+    DIRECTORY = "directory"
+    EXTENSION = "extension"
+
+
+class Option(str, Enum):
+    LARGER = "--larger"
+    SMALLER = "--smaller"
+    LONGER = "--longer"
+    SHORTER = "--shorter"
+    BETWEEN = "--between"
+    YEAR = "--year"
+    MONTH = "--month"
+    DAY = "--day"
+    SPECIFIC = "--specific"
+
+    @classmethod
+    def duration(cls) -> list[str]:
+        return [cls.LONGER.value, cls.SHORTER.value, cls.BETWEEN.value]
+
+    @classmethod
+    def size(cls) -> list[str]:
+        return [cls.LARGER.value, cls.SMALLER.value, cls.BETWEEN.value]
