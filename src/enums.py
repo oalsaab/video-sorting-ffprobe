@@ -43,3 +43,8 @@ class Command(str, Enum):
     DURATION = "duration"
     DIMENSIONS = "dimensions"
     EXTENSIONS = "extensions"
+
+
+class Argument(str, Enum):
+    DIRECTORY = "directory"
+    EXTENSION = "extension"

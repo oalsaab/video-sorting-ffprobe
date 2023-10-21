@@ -5,12 +5,15 @@ from typing import Iterable
 import click
 
 from src.create_stream import create_streams
+from src.enums import Argument
 from src.enums import Command
 from src.read_stream import Stream
 from src.sort_stream import *
 
-directory = click.argument("directory", type=click.Path(exists=True, path_type=Path))
-extension = click.argument("extension", nargs=-1)
+directory = click.argument(
+    Argument.DIRECTORY, type=click.Path(exists=True, path_type=Path)
+)
+extension = click.argument(Argument.EXTENSION, nargs=-1)
 
 
 @click.group()
