@@ -57,40 +57,33 @@ def extensions(streams: Iterable[Stream]):
         sort_extension(stream)
 
 
-@cli.command("duration_longer")
+@cli.command("duration")
 @directory
 @extension
 @create_streams
-@click.option("--value", nargs=1, type=click.FLOAT, required=True)
-def duration_longer(streams: Iterable[Stream], value: float):
-    """Sort by duration longer than"""
+@click.option("--longer", nargs=1, type=click.FLOAT)
+@click.option("--shorter", nargs=1, type=click.FLOAT)
+@click.option("--between", nargs=2, type=click.FLOAT)
+def duration(
+    streams: Iterable[Stream],
+    longer: float,
+    shorter: float,
+    between: tuple[float, float],
+):
+    """Sort by duration"""
+
+    if not any((longer, shorter, between)):
+        raise click.UsageError("PLACEHOLDER")
 
     for stream in streams:
-        sort_duration_long(stream, value)
+        if longer:
+            sort_duration_long(stream, longer)
 
+        if shorter:
+            sort_duration_short(stream, shorter)
 
-@cli.command("duration_shorter")
-@directory
-@extension
-@create_streams
-@click.option("--value", nargs=1, type=click.FLOAT, required=True)
-def duration_shorter(streams: Iterable[Stream], value: float):
-    """Sort by duration shorter than"""
-
-    for stream in streams:
-        sort_duration_short(stream, value)
-
-
-@cli.command("duration_between")
-@directory
-@extension
-@create_streams
-@click.option("--value", nargs=2, type=click.FLOAT, required=True)
-def duration_between(streams: Iterable[Stream], value: tuple[float, float]):
-    """Sort by duration between"""
-
-    for stream in streams:
-        sort_duration_between(stream, value)
+        if between:
+            sort_duration_between(stream, between)
 
 
 @cli.command("year")
