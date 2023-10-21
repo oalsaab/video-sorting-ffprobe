@@ -48,3 +48,15 @@ class Command(str, Enum):
 class Argument(str, Enum):
     DIRECTORY = "directory"
     EXTENSION = "extension"
+
+
+class Option(str, Enum):
+    LARGER = "--larger"
+    SMALLER = "--smaller"
+    LONGER = "--longer"
+    SHORTER = "--shorter"
+    BETWEEN = "--between"
+    YEAR = "--year"
+    MONTH = "--month"
+    DAY = "--day"
+    SPECIFIC = "--specific"

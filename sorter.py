@@ -7,6 +7,7 @@ import click
 from src.create_stream import create_streams
 from src.enums import Argument
 from src.enums import Command
+from src.enums import Option
 from src.read_stream import Stream
 from src.sort_stream import *
 
@@ -65,9 +66,9 @@ def extensions(streams: Iterable[Stream]):
 @directory
 @extension
 @create_streams
-@click.option("--longer", nargs=1, type=click.FLOAT)
-@click.option("--shorter", nargs=1, type=click.FLOAT)
-@click.option("--between", nargs=2, type=click.FLOAT)
+@click.option(Option.LONGER, nargs=1, type=click.FLOAT)
+@click.option(Option.SHORTER, nargs=1, type=click.FLOAT)
+@click.option(Option.BETWEEN, nargs=2, type=click.FLOAT)
 def duration(
     streams: Iterable[Stream],
     longer: float,
@@ -94,10 +95,10 @@ def duration(
 @directory
 @extension
 @create_streams
-@click.option("--year", nargs=1, type=click.DateTime(formats=["%Y"]))
-@click.option("--month", nargs=1, type=click.DateTime(formats=["%m"]))
-@click.option("--day", nargs=1, type=click.DateTime(formats=["%d"]))
-@click.option("--specific", nargs=1, type=click.DateTime(formats=["%Y-%m-%d"]))
+@click.option(Option.YEAR, nargs=1, type=click.DateTime(formats=["%Y"]))
+@click.option(Option.MONTH, nargs=1, type=click.DateTime(formats=["%m"]))
+@click.option(Option.DAY, nargs=1, type=click.DateTime(formats=["%d"]))
+@click.option(Option.SPECIFIC, nargs=1, type=click.DateTime(formats=["%Y-%m-%d"]))
 def creation(
     streams: Iterable[Stream],
     year: datetime,
@@ -128,9 +129,9 @@ def creation(
 @directory
 @extension
 @create_streams
-@click.option("--larger", nargs=1, type=click.FLOAT)
-@click.option("--smaller", nargs=1, type=click.FLOAT)
-@click.option("--between", nargs=2, type=click.FLOAT)
+@click.option(Option.LARGER, nargs=1, type=click.FLOAT)
+@click.option(Option.SMALLER, nargs=1, type=click.FLOAT)
+@click.option(Option.BETWEEN, nargs=2, type=click.FLOAT)
 def size_larger(
     streams: Iterable[Stream],
     larger: float,
