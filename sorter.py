@@ -86,65 +86,38 @@ def duration(
             sort_duration_between(stream, between)
 
 
-@cli.command("year")
-@directory
-@extension
-@create_streams
-@click.option("--value", nargs=1, type=click.DateTime(formats=["%Y"]), required=True)
-def creation_year(streams: Iterable[Stream], value: datetime):
-    """Sort by year"""
-
-    for stream in streams:
-        sort_year(stream, value.year)
-
-
-@cli.command("month")
-@directory
-@extension
-@create_streams
-@click.option("--value", nargs=1, type=click.DateTime(formats=["%m"]), required=True)
-def creation_year(streams: Iterable[Stream], value: datetime):
-    """Sort by month"""
-
-    for stream in streams:
-        sort_month(stream, value.month)
-
-
-@cli.command("day")
-@directory
-@extension
-@create_streams
-@click.option("--value", nargs=1, type=click.DateTime(formats=["%d"]), required=True)
-def creation_day(streams: Iterable[Stream], value: datetime):
-    """Sort by day"""
-
-    for stream in streams:
-        sort_day(stream, value.day)
-
-
 @cli.command("date")
 @directory
 @extension
 @create_streams
-def creation_full(streams: Iterable[Stream]):
-    """Sort by full date"""
+@click.option("--year", nargs=1, type=click.DateTime(formats=["%Y"]))
+@click.option("--month", nargs=1, type=click.DateTime(formats=["%m"]))
+@click.option("--day", nargs=1, type=click.DateTime(formats=["%d"]))
+@click.option("--specific", nargs=1, type=click.DateTime(formats=["%Y-%m-%d"]))
+def creation(
+    streams: Iterable[Stream],
+    year: datetime,
+    month: datetime,
+    day: datetime,
+    specific: datetime,
+):
+    """Sort by date"""
 
     for stream in streams:
-        sort_full_date(stream)
+        if year:
+            sort_year(stream, year.year)
 
+        elif month:
+            sort_month(stream, month.month)
 
-@cli.command("specific_date")
-@directory
-@extension
-@create_streams
-@click.option(
-    "--value", nargs=1, type=click.DateTime(formats=["%Y-%m-%d"]), required=True
-)
-def creation_specific(streams: Iterable[Stream], value: datetime):
-    """Sort by specific date"""
+        elif day:
+            sort_day(stream, day.day)
 
-    for stream in streams:
-        sort_specific_date(stream, value.date())
+        elif specific:
+            sort_specific_date(stream, specific.date())
+
+        else:
+            sort_full_date(stream)
 
 
 @cli.command("size_larger")
