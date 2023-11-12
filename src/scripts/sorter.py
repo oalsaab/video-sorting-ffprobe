@@ -4,12 +4,12 @@ from typing import Iterable
 
 import click
 
-from src.create_stream import create_streams
-from src.enums import Argument
-from src.enums import Command
-from src.enums import Option
-from src.read_stream import Stream
-from src.sort_stream import *
+from .utils.create_stream import create_streams
+from .utils.enums import Argument
+from .utils.enums import Command
+from .utils.enums import Option
+from .utils.read_stream import Stream
+from .utils.sort_stream import *
 
 directory = click.argument(
     Argument.DIRECTORY, type=click.Path(exists=True, path_type=Path)
@@ -158,5 +158,5 @@ def size_larger(
             sort_size_between(stream, between)
 
 
-if __name__ == "__main__":
-    cli()
+# if __name__ == "__main__":
+#     cli()

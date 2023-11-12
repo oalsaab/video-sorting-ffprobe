@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "video-sorting-ffprobe"
+version = "1.0.0"
+description = "Multimedia sorting CLI"
+authors = ["oalsaab"]
+readme = "README.md"
+packages = [{ include = "scripts", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+click = "8.1.7"
+
+[tool.poetry.scripts]
+sorter = "scripts.sorter:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
