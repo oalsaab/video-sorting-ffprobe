@@ -4,12 +4,12 @@ from typing import Iterable
 
 import click
 
-from src.create_stream import create_streams
-from src.enums import Argument
-from src.enums import Command
-from src.enums import Option
-from src.read_stream import Stream
-from src.sort_stream import *
+from ..create_stream import create_streams
+from ..enums import Argument
+from ..enums import Command
+from ..enums import Option
+from ..read_stream import Stream
+from ..sort_stream import *
 
 directory = click.argument(
     Argument.DIRECTORY, type=click.Path(exists=True, path_type=Path)
