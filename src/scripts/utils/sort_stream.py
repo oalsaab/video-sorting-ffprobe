@@ -1,3 +1,5 @@
+import operator
+from collections.abc import Callable
 from datetime import datetime
 from typing import Optional
 from typing import TypeAlias
@@ -14,12 +16,12 @@ Attribute: TypeAlias = Union[str, int]
 Partition: TypeAlias = Optional[str]
 
 
-def _sort_greater_than(attribute: Attribute, value: float, name: str) -> Partition:
-    return f"{name}_{value}" if (float(attribute) >= value) else None
+def _sort_ordering(
+    attribute: Attribute, value: float, name: str, operation: Callable
+) -> Partition:
+    _attribute = float(attribute)
 
-
-def _sort_less_than(attribute: Attribute, value: float, name: str) -> Partition:
-    return f"{name}_{value}" if (value >= float(attribute)) else None
+    return f"{name}_{value}" if operation(_attribute, value) else None
 
 
 def _sort_between(
@@ -82,19 +84,21 @@ def sort_specific_date(stream: Stream, value: datetime) -> Partition:
 
 @sort()
 def sort_duration_long(stream: Stream, value: float) -> Partition:
-    return _sort_greater_than(
+    return _sort_ordering(
         attribute=stream.duration,
         value=value,
         name=Duration.LONGER.value,
+        operation=operator.ge,
     )
 
 
 @sort()
 def sort_duration_short(stream: Stream, value: float) -> Partition:
-    return _sort_less_than(
+    return _sort_ordering(
         attribute=stream.duration,
         value=value,
         name=Duration.SHORTER.value,
+        operation=operator.le,
     )
 
 
@@ -109,19 +113,21 @@ def sort_duration_between(stream: Stream, value: tuple[float, float]) -> Partiti
 
 @sort()
 def sort_size_larger(stream: Stream, value: float) -> Partition:
-    return _sort_greater_than(
+    return _sort_ordering(
         attribute=stream.size,
         value=value,
         name=Size.LARGER.value,
+        operation=operator.ge,
     )
 
 
 @sort()
 def sort_size_smaller(stream: Stream, value: float) -> Partition:
-    return _sort_less_than(
+    return _sort_ordering(
         attribute=stream.size,
         value=value,
         name=Size.SMALLER.value,
+        operation=operator.le,
     )
 
 
