@@ -156,7 +156,3 @@ def size_larger(
 
         if between:
             sort_size_between(stream, between)
-
-
-# if __name__ == "__main__":
-#     cli()
