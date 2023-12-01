@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional
+from typing import TypeAlias
 from typing import Union
 
 from .enums import Audio
@@ -9,22 +10,21 @@ from .enums import Size
 from .read_stream import Stream
 from .sort import sort
 
+Attribute: TypeAlias = Union[str, int]
+Partition: TypeAlias = Optional[str]
 
-def _sort_greater_than(
-    attribute: Union[str, int], value: float, name: str
-) -> Optional[str]:
+
+def _sort_greater_than(attribute: Attribute, value: float, name: str) -> Partition:
     return f"{name}_{value}" if (float(attribute) >= value) else None
 
 
-def _sort_less_than(
-    attribute: Union[str, int], value: float, name: str
-) -> Optional[str]:
+def _sort_less_than(attribute: Attribute, value: float, name: str) -> Partition:
     return f"{name}_{value}" if (value >= float(attribute)) else None
 
 
 def _sort_between(
-    attribute: Union[str, int], value: tuple[float, float], name: str
-) -> Optional[str]:
+    attribute: Attribute, value: tuple[float, float], name: str
+) -> Partition:
     lesser, greater = value
 
     return (
@@ -50,17 +50,17 @@ def sort_extension(stream: Stream) -> str:
 
 
 @sort()
-def sort_year(stream: Stream, value: int) -> Optional[str]:
+def sort_year(stream: Stream, value: int) -> Partition:
     return f"{Creation.YEAR}-{value}" if (stream.creation.year == value) else None
 
 
 @sort()
-def sort_month(stream: Stream, value: int) -> Optional[str]:
+def sort_month(stream: Stream, value: int) -> Partition:
     return f"{Creation.MONTH}-{value}" if (stream.creation.month == value) else None
 
 
 @sort()
-def sort_day(stream: Stream, value: int) -> Optional[str]:
+def sort_day(stream: Stream, value: int) -> Partition:
     return f"{Creation.DAY}-{value}" if (stream.creation.day == value) else None
 
 
@@ -76,12 +76,12 @@ def sort_full_date(stream: Stream) -> str:
 
 
 @sort()
-def sort_specific_date(stream: Stream, value: datetime) -> Optional[str]:
+def sort_specific_date(stream: Stream, value: datetime) -> Partition:
     return f"{value}" if (stream.creation == value) else None
 
 
 @sort()
-def sort_duration_long(stream: Stream, value: float) -> Optional[str]:
+def sort_duration_long(stream: Stream, value: float) -> Partition:
     return _sort_greater_than(
         attribute=stream.duration,
         value=value,
@@ -90,7 +90,7 @@ def sort_duration_long(stream: Stream, value: float) -> Optional[str]:
 
 
 @sort()
-def sort_duration_short(stream: Stream, value: float) -> Optional[str]:
+def sort_duration_short(stream: Stream, value: float) -> Partition:
     return _sort_less_than(
         attribute=stream.duration,
         value=value,
@@ -99,7 +99,7 @@ def sort_duration_short(stream: Stream, value: float) -> Optional[str]:
 
 
 @sort()
-def sort_duration_between(stream: Stream, value: tuple[float, float]) -> Optional[str]:
+def sort_duration_between(stream: Stream, value: tuple[float, float]) -> Partition:
     return _sort_between(
         attribute=stream.duration,
         value=value,
@@ -108,7 +108,7 @@ def sort_duration_between(stream: Stream, value: tuple[float, float]) -> Optiona
 
 
 @sort()
-def sort_size_larger(stream: Stream, value: float) -> Optional[str]:
+def sort_size_larger(stream: Stream, value: float) -> Partition:
     return _sort_greater_than(
         attribute=stream.size,
         value=value,
@@ -117,7 +117,7 @@ def sort_size_larger(stream: Stream, value: float) -> Optional[str]:
 
 
 @sort()
-def sort_size_smaller(stream: Stream, value: float) -> Optional[str]:
+def sort_size_smaller(stream: Stream, value: float) -> Partition:
     return _sort_less_than(
         attribute=stream.size,
         value=value,
@@ -126,7 +126,7 @@ def sort_size_smaller(stream: Stream, value: float) -> Optional[str]:
 
 
 @sort()
-def sort_size_between(stream: Stream, value: tuple[float, float]) -> Optional[str]:
+def sort_size_between(stream: Stream, value: tuple[float, float]) -> Partition:
     return _sort_between(
         attribute=stream.size,
         value=value,
