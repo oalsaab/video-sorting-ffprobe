@@ -15,7 +15,7 @@ Concatenating of video files is made easier when the files are sorted appropriat
 
 ## Installation
 
-Requires python version 3.9+.
+Requires python version 3.10+.
 
 To use the program you must have FFmpeg installed and add ffprobe to your enviorment variables.
 
