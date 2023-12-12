@@ -3,6 +3,7 @@ import asyncio.subprocess
 import json
 import os
 import shlex
+from asyncio import Semaphore
 from functools import wraps
 from pathlib import Path
 from typing import Iterable
@@ -18,11 +19,11 @@ class Processed(NamedTuple):
     deserialized: dict
 
 
-async def _process(file: Path, limit: int) -> Processed:
+async def _process(file: Path, semaphore: Semaphore) -> Processed:
     cmd = shlex.split(COMMAND)
     cmd.append(file)
 
-    async with asyncio.Semaphore(limit):
+    async with semaphore:
         process = await asyncio.create_subprocess_exec(
             *cmd, stdout=asyncio.subprocess.PIPE
         )
@@ -37,8 +38,9 @@ async def _process(file: Path, limit: int) -> Processed:
 
 async def _stream_collection(files: Iterable[Path]) -> list[Processed]:
     limit = os.cpu_count()
+    semaphore = asyncio.Semaphore(limit)
 
-    tasks = [asyncio.create_task(_process(file, limit)) for file in files]
+    tasks = [asyncio.create_task(_process(file, semaphore)) for file in files]
     processed = await asyncio.gather(*tasks)
 
     return processed
