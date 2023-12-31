@@ -1,8 +1,8 @@
 import logging
 import shutil
+from collections.abc import Iterator
 from functools import wraps
 from pathlib import Path
-from typing import Optional
 from typing import Protocol
 
 logging.basicConfig(level=logging.INFO)
@@ -12,22 +12,25 @@ class Stream(Protocol):
     file: Path
 
 
+class Result(Protocol):
+    stream: Stream
+    partition: str
+
+
 def sort(parents=False):
     def _sort(func):
         @wraps(func)
-        def decorator(stream: Stream, *args, **kwargs):
-            details: Optional[str] = func(stream, *args, **kwargs)
+        def decorator(streams: Iterator[Stream], *args, **kwargs):
+            results: Iterator[Result] = func(streams, *args, **kwargs)
 
-            if details is None:
-                return
+            for result in results:
+                path = Path(f"{result.stream.file.parent}/{result.partition}")
 
-            partition = Path(f"{stream.file.parent}/{details}")
+                path.mkdir(exist_ok=True, parents=parents)
 
-            partition.mkdir(exist_ok=True, parents=parents)
+                shutil.move(result.stream.file, path)
 
-            shutil.move(stream.file, partition)
-
-            logging.info(" %s moved to %s" % (stream.file.name, partition))
+                logging.info(" %s --> %s" % (result.stream.file.name, path))
 
         return decorator
 
