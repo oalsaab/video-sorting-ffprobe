@@ -1,7 +1,7 @@
 import sys
+from collections.abc import Iterator
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable
 
 import click
 
@@ -47,7 +47,7 @@ def cli():
 @directory
 @extension
 @create_streams
-def audio(streams: Iterable[Stream]):
+def audio(streams: Iterator[Stream]):
     """Sort by audio"""
 
     sort_audio(streams)
@@ -57,7 +57,7 @@ def audio(streams: Iterable[Stream]):
 @directory
 @extension
 @create_streams
-def dimensions(streams: Iterable[Stream]):
+def dimensions(streams: Iterator[Stream]):
     """Sort by dimensions"""
 
     sort_dimension(streams)
@@ -67,7 +67,7 @@ def dimensions(streams: Iterable[Stream]):
 @directory
 @extension
 @create_streams
-def extensions(streams: Iterable[Stream]):
+def extensions(streams: Iterator[Stream]):
     """Sort by extensions"""
 
     sort_extension(streams)
@@ -81,7 +81,7 @@ def extensions(streams: Iterable[Stream]):
 @click.option(Option.SHORTER, nargs=1, type=click.FLOAT)
 @click.option(Option.BETWEEN, nargs=2, type=click.FLOAT)
 def duration(
-    streams: Iterable[Stream],
+    streams: Iterator[Stream],
     longer: float,
     shorter: float,
     between: tuple[float, float],
@@ -114,7 +114,7 @@ def duration(
 @click.option(Option.DAY, nargs=1, type=click.DateTime(formats=["%d"]))
 @click.option(Option.SPECIFIC, nargs=1, type=click.DateTime(formats=["%Y-%m-%d"]))
 def creation(
-    streams: Iterable[Stream],
+    streams: Iterator[Stream],
     year: datetime,
     month: datetime,
     day: datetime,
@@ -149,7 +149,7 @@ def creation(
 @click.option(Option.SMALLER, nargs=1, type=click.FLOAT)
 @click.option(Option.BETWEEN, nargs=2, type=click.FLOAT)
 def size_larger(
-    streams: Iterable[Stream],
+    streams: Iterator[Stream],
     larger: float,
     smaller: float,
     between: tuple[float, float],
