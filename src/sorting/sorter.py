@@ -38,7 +38,7 @@ def cli():
     Provide a sort command followed by path to directory
     and extensions of multimedia files to process
 
-    e.g. sorter.py audio 'path/videos' mov mp4
+    e.g. poetry run sorter audio 'path/videos' mov mp4
 
     """
 
