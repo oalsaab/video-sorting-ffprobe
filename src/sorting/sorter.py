@@ -50,8 +50,7 @@ def cli():
 def audio(streams: Iterable[Stream]):
     """Sort by audio"""
 
-    for stream in streams:
-        sort_audio(stream)
+    sort_audio(streams)
 
 
 @cli.command(Command.DIMENSIONS)
@@ -61,8 +60,7 @@ def audio(streams: Iterable[Stream]):
 def dimensions(streams: Iterable[Stream]):
     """Sort by dimensions"""
 
-    for stream in streams:
-        sort_dimension(stream)
+    sort_dimension(streams)
 
 
 @cli.command(Command.EXTENSIONS)
@@ -72,8 +70,7 @@ def dimensions(streams: Iterable[Stream]):
 def extensions(streams: Iterable[Stream]):
     """Sort by extensions"""
 
-    for stream in streams:
-        sort_extension(stream)
+    sort_extension(streams)
 
 
 @cli.command(Command.DURATION)
@@ -93,20 +90,19 @@ def duration(
 
     args = Args()
 
-    for stream in streams:
-        match args.option:
-            case Option.LONGER:
-                sort_duration_long(stream, longer)
+    match args.option:
+        case Option.LONGER:
+            sort_duration_long(streams, longer)
 
-            case Option.SHORTER:
-                sort_duration_short(stream, shorter)
+        case Option.SHORTER:
+            sort_duration_short(streams, shorter)
 
-            case Option.BETWEEN:
-                sort_duration_between(stream, between)
+        case Option.BETWEEN:
+            sort_duration_between(streams, between)
 
-            case _:
-                message = args.err_msg("Duration", Option.duration())
-                raise click.UsageError(message)
+        case _:
+            message = args.err_msg("Duration", Option.duration())
+            raise click.UsageError(message)
 
 
 @cli.command(Command.DATE)
@@ -128,22 +124,21 @@ def creation(
 
     args = Args()
 
-    for stream in streams:
-        match args.option:
-            case Option.YEAR:
-                sort_year(stream, year.year)
+    match args.option:
+        case Option.YEAR:
+            sort_year(streams, year.year)
 
-            case Option.MONTH:
-                sort_month(stream, month.month)
+        case Option.MONTH:
+            sort_month(streams, month.month)
 
-            case Option.DAY:
-                sort_day(stream, day.day)
+        case Option.DAY:
+            sort_day(streams, day.day)
 
-            case Option.SPECIFIC:
-                sort_specific_date(stream, specific.date())
+        case Option.SPECIFIC:
+            sort_specific_date(streams, specific.date())
 
-            case _:
-                sort_full_date(stream)
+        case _:
+            sort_full_date(streams)
 
 
 @cli.command(Command.SIZE)
@@ -163,17 +158,16 @@ def size_larger(
 
     args = Args()
 
-    for stream in streams:
-        match args.option:
-            case Option.LARGER:
-                sort_size_larger(stream, larger)
+    match args.option:
+        case Option.LARGER:
+            sort_size_larger(streams, larger)
 
-            case Option.SMALLER:
-                sort_size_smaller(stream, smaller)
+        case Option.SMALLER:
+            sort_size_smaller(streams, smaller)
 
-            case Option.BETWEEN:
-                sort_size_between(stream, between)
+        case Option.BETWEEN:
+            sort_size_between(streams, between)
 
-            case _:
-                message = args.err_msg("Size", Option.size())
-                raise click.UsageError(message)
+        case _:
+            message = args.err_msg("Size", Option.size())
+            raise click.UsageError(message)
