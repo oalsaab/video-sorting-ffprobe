@@ -1,7 +1,7 @@
 import sys
+from collections.abc import Iterator
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable
 
 import click
 
@@ -38,7 +38,7 @@ def cli():
     Provide a sort command followed by path to directory
     and extensions of multimedia files to process
 
-    e.g. sorter.py audio 'path/videos' mov mp4
+    e.g. poetry run sorter audio 'path/videos' mov mp4
 
     """
 
@@ -47,33 +47,30 @@ def cli():
 @directory
 @extension
 @create_streams
-def audio(streams: Iterable[Stream]):
+def audio(streams: Iterator[Stream]):
     """Sort by audio"""
 
-    for stream in streams:
-        sort_audio(stream)
+    sort_audio(streams)
 
 
 @cli.command(Command.DIMENSIONS)
 @directory
 @extension
 @create_streams
-def dimensions(streams: Iterable[Stream]):
+def dimensions(streams: Iterator[Stream]):
     """Sort by dimensions"""
 
-    for stream in streams:
-        sort_dimension(stream)
+    sort_dimension(streams)
 
 
 @cli.command(Command.EXTENSIONS)
 @directory
 @extension
 @create_streams
-def extensions(streams: Iterable[Stream]):
+def extensions(streams: Iterator[Stream]):
     """Sort by extensions"""
 
-    for stream in streams:
-        sort_extension(stream)
+    sort_extension(streams)
 
 
 @cli.command(Command.DURATION)
@@ -84,7 +81,7 @@ def extensions(streams: Iterable[Stream]):
 @click.option(Option.SHORTER, nargs=1, type=click.FLOAT)
 @click.option(Option.BETWEEN, nargs=2, type=click.FLOAT)
 def duration(
-    streams: Iterable[Stream],
+    streams: Iterator[Stream],
     longer: float,
     shorter: float,
     between: tuple[float, float],
@@ -93,20 +90,19 @@ def duration(
 
     args = Args()
 
-    for stream in streams:
-        match args.option:
-            case Option.LONGER:
-                sort_duration_long(stream, longer)
+    match args.option:
+        case Option.LONGER:
+            sort_duration_long(streams, longer)
 
-            case Option.SHORTER:
-                sort_duration_short(stream, shorter)
+        case Option.SHORTER:
+            sort_duration_short(streams, shorter)
 
-            case Option.BETWEEN:
-                sort_duration_between(stream, between)
+        case Option.BETWEEN:
+            sort_duration_between(streams, between)
 
-            case _:
-                message = args.err_msg("Duration", Option.duration())
-                raise click.UsageError(message)
+        case _:
+            message = args.err_msg("Duration", Option.duration())
+            raise click.UsageError(message)
 
 
 @cli.command(Command.DATE)
@@ -118,7 +114,7 @@ def duration(
 @click.option(Option.DAY, nargs=1, type=click.DateTime(formats=["%d"]))
 @click.option(Option.SPECIFIC, nargs=1, type=click.DateTime(formats=["%Y-%m-%d"]))
 def creation(
-    streams: Iterable[Stream],
+    streams: Iterator[Stream],
     year: datetime,
     month: datetime,
     day: datetime,
@@ -128,22 +124,21 @@ def creation(
 
     args = Args()
 
-    for stream in streams:
-        match args.option:
-            case Option.YEAR:
-                sort_year(stream, year.year)
+    match args.option:
+        case Option.YEAR:
+            sort_year(streams, year.year)
 
-            case Option.MONTH:
-                sort_month(stream, month.month)
+        case Option.MONTH:
+            sort_month(streams, month.month)
 
-            case Option.DAY:
-                sort_day(stream, day.day)
+        case Option.DAY:
+            sort_day(streams, day.day)
 
-            case Option.SPECIFIC:
-                sort_specific_date(stream, specific.date())
+        case Option.SPECIFIC:
+            sort_specific_date(streams, specific.date())
 
-            case _:
-                sort_full_date(stream)
+        case _:
+            sort_full_date(streams)
 
 
 @cli.command(Command.SIZE)
@@ -154,7 +149,7 @@ def creation(
 @click.option(Option.SMALLER, nargs=1, type=click.FLOAT)
 @click.option(Option.BETWEEN, nargs=2, type=click.FLOAT)
 def size_larger(
-    streams: Iterable[Stream],
+    streams: Iterator[Stream],
     larger: float,
     smaller: float,
     between: tuple[float, float],
@@ -163,17 +158,16 @@ def size_larger(
 
     args = Args()
 
-    for stream in streams:
-        match args.option:
-            case Option.LARGER:
-                sort_size_larger(stream, larger)
+    match args.option:
+        case Option.LARGER:
+            sort_size_larger(streams, larger)
 
-            case Option.SMALLER:
-                sort_size_smaller(stream, smaller)
+        case Option.SMALLER:
+            sort_size_smaller(streams, smaller)
 
-            case Option.BETWEEN:
-                sort_size_between(stream, between)
+        case Option.BETWEEN:
+            sort_size_between(streams, between)
 
-            case _:
-                message = args.err_msg("Size", Option.size())
-                raise click.UsageError(message)
+        case _:
+            message = args.err_msg("Size", Option.size())
+            raise click.UsageError(message)

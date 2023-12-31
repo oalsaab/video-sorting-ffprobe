@@ -4,14 +4,14 @@ version = "1.0.0"
 description = "Multimedia sorting CLI"
 authors = ["oalsaab"]
 readme = "README.md"
-packages = [{ include = "scripts", from = "src" }]
+packages = [{ include = "sorting", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 click = "8.1.7"
 
 [tool.poetry.scripts]
-sorter = "scripts.sorter:cli"
+sorter = "sorting.sorter:cli"
 
 [build-system]
 requires = ["poetry-core"]
