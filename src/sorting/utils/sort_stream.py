@@ -14,18 +14,20 @@ from .enums import Size
 from .read_stream import Stream
 from .sort import sort
 
-Attribute: TypeAlias = Union[str, int]
-Partition: TypeAlias = Optional[str]
-
 
 class Result(NamedTuple):
     stream: Stream
     partition: str
 
 
+Attribute: TypeAlias = Union[str, int]
+Streams: TypeAlias = Iterator[Stream]
+Results: TypeAlias = Iterator[Result]
+
+
 def _sort_ordering(
     attribute: Attribute, value: float, name: str, operation: Callable
-) -> Partition:
+) -> Optional[str]:
     _attribute = float(attribute)
 
     return f"{name}_{value}" if operation(_attribute, value) else None
@@ -33,7 +35,7 @@ def _sort_ordering(
 
 def _sort_between(
     attribute: Attribute, value: tuple[float, float], name: str
-) -> Partition:
+) -> Optional[str]:
     lesser, greater = value
 
     return (
@@ -44,26 +46,26 @@ def _sort_between(
 
 
 @sort()
-def sort_audio(streams: Iterator[Stream]) -> Iterator[Result]:
+def sort_audio(streams: Streams) -> Results:
     for stream in streams:
         partition = Audio.AUDIO.value if stream.audio is True else Audio.NO_AUDIO.value
         yield Result(stream, partition)
 
 
 @sort()
-def sort_dimension(streams: Iterator[Stream]) -> Iterator[Result]:
+def sort_dimension(streams: Streams) -> Results:
     for stream in streams:
         yield Result(stream, f"{stream.dimension.width}x{stream.dimension.height}")
 
 
 @sort()
-def sort_extension(streams: Iterator[Stream]) -> Iterator[Result]:
+def sort_extension(streams: Streams) -> Results:
     for stream in streams:
         yield Result(stream, stream.extension)
 
 
 @sort()
-def sort_year(streams: Iterator[Stream], value: int) -> Iterator[Result]:
+def sort_year(streams: Streams, value: int) -> Results:
     for stream in streams:
         if stream.creation.year != value:
             continue
@@ -72,7 +74,7 @@ def sort_year(streams: Iterator[Stream], value: int) -> Iterator[Result]:
 
 
 @sort()
-def sort_month(streams: Iterator[Stream], value: int) -> Iterator[Result]:
+def sort_month(streams: Streams, value: int) -> Results:
     for stream in streams:
         if stream.creation.month != value:
             continue
@@ -81,7 +83,7 @@ def sort_month(streams: Iterator[Stream], value: int) -> Iterator[Result]:
 
 
 @sort()
-def sort_day(streams: Iterator[Stream], value: int) -> Iterator[Result]:
+def sort_day(streams: Streams, value: int) -> Results:
     for stream in streams:
         if stream.creation.day != value:
             continue
@@ -90,7 +92,7 @@ def sort_day(streams: Iterator[Stream], value: int) -> Iterator[Result]:
 
 
 @sort(parents=True)
-def sort_full_date(streams: Iterator[Stream]) -> Iterator[Result]:
+def sort_full_date(streams: Streams) -> Results:
     for stream in streams:
         year, month, day = (
             stream.creation.year,
@@ -102,7 +104,7 @@ def sort_full_date(streams: Iterator[Stream]) -> Iterator[Result]:
 
 
 @sort()
-def sort_specific_date(streams: Iterator[Stream], value: datetime) -> Iterator[Result]:
+def sort_specific_date(streams: Streams, value: datetime) -> Results:
     for stream in streams:
         if stream.creation != value:
             continue
@@ -111,7 +113,7 @@ def sort_specific_date(streams: Iterator[Stream], value: datetime) -> Iterator[R
 
 
 @sort()
-def sort_duration_long(streams: Iterator[Stream], value: float) -> Iterator[Result]:
+def sort_duration_long(streams: Streams, value: float) -> Results:
     for stream in streams:
         partition = _sort_ordering(
             attribute=stream.duration,
@@ -127,7 +129,7 @@ def sort_duration_long(streams: Iterator[Stream], value: float) -> Iterator[Resu
 
 
 @sort()
-def sort_duration_short(streams: Iterator[Stream], value: float) -> Iterator[Result]:
+def sort_duration_short(streams: Streams, value: float) -> Results:
     for stream in streams:
         partition = _sort_ordering(
             attribute=stream.duration,
@@ -143,9 +145,7 @@ def sort_duration_short(streams: Iterator[Stream], value: float) -> Iterator[Res
 
 
 @sort()
-def sort_duration_between(
-    streams: Iterator[Stream], value: tuple[float, float]
-) -> Iterator[Result]:
+def sort_duration_between(streams: Streams, value: tuple[float, float]) -> Results:
     for stream in streams:
         partition = _sort_between(
             attribute=stream.duration,
@@ -160,7 +160,7 @@ def sort_duration_between(
 
 
 @sort()
-def sort_size_larger(streams: Iterator[Stream], value: float) -> Iterator[Result]:
+def sort_size_larger(streams: Streams, value: float) -> Results:
     for stream in streams:
         partition = _sort_ordering(
             attribute=stream.size,
@@ -176,7 +176,7 @@ def sort_size_larger(streams: Iterator[Stream], value: float) -> Iterator[Result
 
 
 @sort()
-def sort_size_smaller(streams: Iterator[Stream], value: float) -> Iterator[Result]:
+def sort_size_smaller(streams: Streams, value: float) -> Results:
     for stream in streams:
         partition = _sort_ordering(
             attribute=stream.size,
@@ -192,9 +192,7 @@ def sort_size_smaller(streams: Iterator[Stream], value: float) -> Iterator[Resul
 
 
 @sort()
-def sort_size_between(
-    streams: Iterator[Stream], value: tuple[float, float]
-) -> Iterator[Result]:
+def sort_size_between(streams: Streams, value: tuple[float, float]) -> Results:
     for stream in streams:
         partition = _sort_between(
             attribute=stream.size,
